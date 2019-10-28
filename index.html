@@ -45,9 +45,18 @@
 
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>Yuuki Wesp</title>
-        <link rel="icon" type="image/png" href="favicon.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="Description" content="Yuuki Wesp is a hardware engineer, 3D designer and DNA Processor">
+        <meta property="og:description" content="Yuuki Wesp is a hardware engineer, 3D designer and DNA Processor">
+        <meta property="og:image:height" content="522">
+        <meta property="og:image:width" content="842">
+        <meta property="og:image" content="resources/@og-842x522.png">
+        
+
+        <link rel="icon" type="image/png" href="resources/@favicon.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <script async src="scripts/@nya.min.js"></script>
         <style>
             hr:first-of-type    { margin-top: -7px; }
             #bottom             { line-height: 25px; }
@@ -76,12 +85,20 @@
                 border-width: 5px;
                 background-color: white;
             }
+            .canvas {
+                z-index: -1;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+            }
         </style>
     
     </head>
     <body>
       <div id="wrapper">
-        <img src="@no-u.png">
+        <img src="resources/@no-u=[outline].png">
         <hr>
         🧬🔬🦠 
         <br>
@@ -105,6 +122,6 @@
           <a href="https://myanimelist.net/animelist/IvySola">MAL</a>
         </div>
       </div>
-    
+      <canvas class="canvas"></canvas>
     </body>
 </html>
