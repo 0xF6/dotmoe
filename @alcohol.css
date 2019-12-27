@@ -1,0 +1,52 @@
+hr:first-of-type {
+  margin-top: -7px;
+}
+
+#bottom {
+  line-height: 25px;
+}
+
+hr:last-of-type {
+  margin-bottom: 0;
+}
+
+body {
+  line-height: 25px;
+  font-family: "Times New Roman", serif;
+  background-color: #111;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+img {
+  margin-top: -220px;
+  max-width: 225px;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+#wrapper {
+  border-style: ridge;
+  border-width: 5px;
+  background-color: white;
+}
+
+.canvas {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#wrapper > h4 {
+  margin-top: -10px;
+}
