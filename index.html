@@ -83,7 +83,7 @@
 
   <body>
     <div id="wrapper">
-      <img src="resources/@no-u=[outline]-[new-year].png" />
+      <img id="base" src="resources/@no-u=[outline].png" />
       <h4>Yuuki Wesp</h4>
       <hr />
       🧬🔬🦠
@@ -133,7 +133,15 @@
 
     <script src="https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js"></script>
     <script>
-      Snowflakes();
+      var _ = new Date(),
+        m = _.getMonth(),
+        d = _.getDay();
+
+      if ((m === 11 && d > 25) || (m === 0 && d < 10)) {
+        Snowflakes();
+        document.getElementById("base").href =
+          "resources/@no-u=[outline]-[new-year].png";
+      }
     </script>
   </body>
 </html>
