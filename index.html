@@ -82,7 +82,6 @@
   </head>
 
   <body>
-    <canvas class="canvas"></canvas>
     <div id="wrapper">
       <img id="base" src="resources/@no-u=[outline].png" />
       <h4>Yuuki Wesp</h4>
@@ -123,6 +122,76 @@
         <a href="https://elementary-sandbox.com/">Elementary Sandbox</a>
       </div>
     </div>
+    <script id="webgl-vshader">
+      attribute vec2 a_position;
+      void main() {
+        gl_Position = vec4(a_position, 0, 1);
+      }
+    </script>
+
+    <script id="fshader">
+      precision mediump float;
+
+      uniform vec2 uResolution;
+      uniform float uTime;
+
+
+      float PI = 3.1415926535;
+
+      float getRate(){
+        float val = 3.2;
+        float modNumber = mod(uTime, val);
+        float returnValue = 0.;
+
+        if (modNumber < 0.8) {
+          returnValue = modNumber / 0.8;
+        } else if (modNumber < 1.6) {
+          returnValue = 1.0;
+        } else if (modNumber < 3.0) {
+          returnValue = (3.0 - modNumber) / 1.4;
+        } else {
+          returnValue = 0.0;
+        }
+
+        return returnValue;
+
+
+      }
+
+      void main(void) {
+        vec2 p = (gl_FragCoord.xy - .5 * uResolution) / min(uResolution.x, uResolution.y);
+        vec3 c = vec3(0.);
+
+        for (int j = 0; j < 3; j++) {
+          for (int i = 1; i < 20; i++ ) {
+            float t = 2. * PI * float(i) / 10.0 * (uTime / 4.0);
+            float x = (float(i) / 5.0 - 2.0) * (sin(t));// sin(t) ;
+            float y = cos(t * (1.0 + float(j) / 10.0));
+            vec2 o = 0.45 * vec2(x, y) * getRate();
+
+            //float b = 1.-r;
+            vec3 col;
+            if (j < 1) {
+              col = vec3(0.1, 0.05, 0.0);
+            } else if (j < 2) {
+              col = vec3(0.00, 0.1, 0.05);
+            } else {
+              col = vec3(0.05, 0.0, 0.1);
+            }
+
+            c += 0.04 / (length(p - o)) * vec3(col);
+          }
+        }
+
+
+
+        gl_FragColor = vec4(c * 0.9, 1.0);
+
+
+      }
+    </script>
+
+    <div id="web-gl-wrapper"></div>
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=UA-70421575-7"
@@ -138,22 +207,6 @@
     </script>
 
     <script src="https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js"></script>
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/2.0.0/pixi.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.2/plugins/ColorPropsPlugin.min.js"
-    ></script>
     <script src="scripts/@2019-nCoV.js"></script>
     <script>
       var _ = new Date(),

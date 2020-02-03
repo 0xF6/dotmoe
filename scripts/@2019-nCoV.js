@@ -1,106 +1,120 @@
-const stage = new PIXI.Stage(0x0, true);
-const renderer = PIXI.autoDetectRenderer(
-  window.innerWidth,
-  window.innerHeight,
-  {
-    view: document.querySelector("canvas")
-  }
-);
+var glVertexShaderText = document.getElementById("webgl-vshader").textContent;
+var fragmentShaderText = document.getElementById("fshader").textContent;
 
-const uniforms = {
-  resolution: {
-    type: "2f",
-    value: {
-      x: window.innerWidth,
-      y: window.innerHeight
+/** webGL */
+(function() {
+  var canvas, gl;
+  var shaderProgram;
+  var positionLocation;
+  var buffer;
+  var vertices;
+  var ut, st;
+  var uTime;
+
+  var start = function() {
+    canvas = document.createElement("canvas");
+    canvas.style.display = "block";
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.width = canvas.width + "px";
+    canvas.style.height = canvas.height + "px";
+
+    var wrapper = document.getElementById("web-gl-wrapper");
+    wrapper.appendChild(canvas);
+
+    initGL(canvas);
+    initShader();
+    initBuffers();
+
+    requestAnimationFrame(drawScene);
+  };
+
+  function initGL(canvas) {
+    try {
+      gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      gl.viewportWidth = canvas.width;
+      gl.viewportHeight = canvas.height;
+    } catch (e) {}
+  }
+
+  function initShader() {
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, fragmentShaderText);
+    gl.compileShader(fragmentShader);
+
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, glVertexShaderText);
+    gl.compileShader(vertexShader);
+
+    shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+
+    gl.linkProgram(shaderProgram);
+
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      console.log("Could not initialise shaders");
     }
-  },
 
-  alpha: {
-    type: "1f",
-    value: 1
-  },
+    gl.useProgram(shaderProgram);
 
-  shift: {
-    type: "1f",
-    value: 1.6
-  },
+    positionLocation = gl.getAttribLocation(shaderProgram, "a_position");
 
-  time: {
-    type: "1f",
-    value: 0
-  },
+    ut = gl.getUniformLocation(shaderProgram, "uTime");
+    st = Date.now();
 
-  speed: {
-    type: "2f",
-    value: {
-      x: 0.7,
-      y: 0.4
-    }
+    var resolution = new Float32Array([canvas.width, canvas.height]);
+    gl.uniform2fv(
+      gl.getUniformLocation(shaderProgram, "uResolution"),
+      resolution
+    );
   }
-};
 
-const fragmentSrc = `
-precision mediump float;
-uniform vec2      resolution;
-uniform float     time;
-uniform float     alpha;
-uniform vec2      speed;
-uniform float     shift;
-  
-float rand(vec2 n) {
- return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
-}
+  function initBuffers() {
+    buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    vertices = [
+      -1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0,
+      1.0,
+      -1.0,
+      1.0,
+      1.0
+    ];
 
-float noise(vec2 n) {
-  const vec2 d = vec2(0.0, 1.0);
-  vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));
-  return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);
-}
-
-float fbm(vec2 n) {
-  float total = 0.0, amplitude = 1.0;
-  for (int i = 0; i < 4; i++) {
-    total += noise(n) * amplitude;
-    n += n;
-    amplitude *= 0.5;
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    buffer.itemSize = 2;
+    buffer.numItem = 6;
   }
-  return total;
-}
 
-void main() {
-  const vec3 c1 = vec3(126.0/255.0, 0.0/255.0, 97.0/255.0);
-  const vec3 c2 = vec3(173.0/255.0, 0.0/255.0, 161.4/255.0);
-  const vec3 c3 = vec3(0.2, 0.0, 0.0);
-  const vec3 c4 = vec3(164.0/255.0, 1.0/255.0, 214.4/255.0);
-  const vec3 c5 = vec3(0.1);
-  const vec3 c6 = vec3(0.9);
+  function drawScene() {
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  vec2 p = gl_FragCoord.xy * 8.0 / resolution.xx;
-  float q = fbm(p - time * 0.1);
-  vec2 r = vec2(fbm(p + q + time * speed.x - p.x - p.y), fbm(p + q - time * speed.y));
-  vec3 c = mix(c1, c2, fbm(p + r)) + mix(c3, c4, r.x) - mix(c5, c6, r.y);
-  float grad = gl_FragCoord.y / resolution.y;
-  gl_FragColor = vec4(c * cos(shift * gl_FragCoord.y / resolution.y), 1.0);
-  gl_FragColor.xyz *= 1.0-grad;
-}
-`;
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(
+      positionLocation,
+      buffer.itemSize,
+      gl.FLOAT,
+      false,
+      0,
+      0
+    );
 
-const filter = new PIXI.AbstractFilter(fragmentSrc.split("\n"), uniforms);
-const logo = PIXI.Sprite.fromImage("/resources/@booow.jpg");
-logo.x = window.innerWidth / 2;
-logo.y = window.innerHeight / 2;
-logo.anchor.set(0.5);
-logo.blendMode = PIXI.blendModes.ADD;
-stage.addChild(logo);
+    gl.uniform1f(ut, (Date.now() - st) / 1000);
 
-function update(timestamp) {
-  filter.uniforms.time.value = timestamp / 1000;
-  filter.syncUniforms();
+    // draw
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-  renderer.render(stage);
+    requestAnimationFrame(drawScene);
+  }
 
-  requestAnimationFrame(update);
-}
-
-requestAnimationFrame(update);
+  start();
+})();

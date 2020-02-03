@@ -38,8 +38,7 @@ a {
   border-width: 5px;
   background-color: white;
 }
-
-.canvas {
+canvas {
   z-index: -1;
   position: absolute;
   top: 0;
