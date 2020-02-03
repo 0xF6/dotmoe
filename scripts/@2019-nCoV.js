@@ -87,9 +87,7 @@ void main() {
 `;
 
 const filter = new PIXI.AbstractFilter(fragmentSrc.split("\n"), uniforms);
-const logo = PIXI.Sprite.fromImage(
-  "https://user-images.githubusercontent.com/13326808/73653128-87c50c80-4699-11ea-83f9-c1360fd5a1dd.png"
-);
+const logo = PIXI.Sprite.fromImage("/resources/@booow.jpg");
 logo.x = window.innerWidth / 2;
 logo.y = window.innerHeight / 2;
 logo.anchor.set(0.5);
