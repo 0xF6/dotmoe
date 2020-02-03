@@ -82,11 +82,24 @@
 
     <script
       type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"
+      src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/2.0.0/pixi.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.2/plugins/ColorPropsPlugin.min.js"
     ></script>
   </head>
 
   <body>
+    <canvas class="canvas"></canvas>
     <div id="wrapper">
       <img id="base" src="resources/@no-u=[outline].png" />
       <h4>Yuuki Wesp</h4>
@@ -121,7 +134,6 @@
         <a href="https://elementary-sandbox.com/">Elementary Sandbox</a>
       </div>
     </div>
-    <div id="render"></div>
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=UA-70421575-7"
@@ -137,7 +149,7 @@
     </script>
 
     <script src="https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js"></script>
-    <script src="scripts/@eva.js"></script>
+    <script src="scripts/@2019-nCoV.js"></script>
     <script>
       var _ = new Date(),
         m = _.getMonth(),

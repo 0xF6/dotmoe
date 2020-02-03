@@ -11,6 +11,7 @@ hr:last-of-type {
 }
 
 body {
+  overflow: hidden;
   line-height: 25px;
   font-family: "Times New Roman", serif;
   background-color: #111;
