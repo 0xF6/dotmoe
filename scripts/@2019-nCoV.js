@@ -14,7 +14,7 @@ tex => {
   texture.minFilter = THREE.LinearFilter;
 
   loader.load(
-  '/resources/f3.jpg',
+  '/resources/f5.png',
   tex => {
     clouds = tex;
     clouds.wrapS = THREE.RepeatWrapping;
@@ -93,7 +93,7 @@ let capturer = new CCapture({
   framerate: 60,
   quality: 90,
   format: 'webm',
-  workersPath: 'js/' });
+  workersPath: 'scripts/' });
 
 let capturing = false;
 
