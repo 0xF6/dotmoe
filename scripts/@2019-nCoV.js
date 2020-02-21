@@ -12,9 +12,12 @@ tex => {
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.minFilter = THREE.LinearFilter;
-
+  const url = new URLSearchParams(window.location.search);
+  const idTexture = url.get("texture");
+  if(!idTexture)
+    idTexture = "f5.png";
   loader.load(
-  '/resources/f5.png',
+  `/resources/${idTexture}`,
   tex => {
     clouds = tex;
     clouds.wrapS = THREE.RepeatWrapping;
