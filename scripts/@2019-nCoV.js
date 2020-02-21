@@ -14,7 +14,7 @@ tex => {
   texture.minFilter = THREE.LinearFilter;
 
   loader.load(
-  '/resources/Alien_Muscle_001_COLOR.jpg',
+  '/resources/f2.jpg',
   tex => {
     clouds = tex;
     clouds.wrapS = THREE.RepeatWrapping;
