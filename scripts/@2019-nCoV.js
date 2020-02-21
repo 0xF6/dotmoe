@@ -14,7 +14,7 @@ tex => {
   texture.minFilter = THREE.LinearFilter;
 
   loader.load(
-  '/resources/f1.jpg',
+  '/resources/f3.jpg',
   tex => {
     clouds = tex;
     clouds.wrapS = THREE.RepeatWrapping;
