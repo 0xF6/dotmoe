@@ -1,120 +1,124 @@
-var glVertexShaderText = document.getElementById("webgl-vshader").textContent;
-var fragmentShaderText = document.getElementById("fshader").textContent;
+let container;
+let camera, scene, renderer;
+let uniforms;
 
-/** webGL */
-(function() {
-  var canvas, gl;
-  var shaderProgram;
-  var positionLocation;
-  var buffer;
-  var vertices;
-  var ut, st;
-  var uTime;
+let loader = new THREE.TextureLoader();
+let texture, clouds;
+loader.setCrossOrigin("anonymous");
+loader.load(
+'/resources/noise.png',
+tex => {
+  texture = tex;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.minFilter = THREE.LinearFilter;
 
-  var start = function() {
-    canvas = document.createElement("canvas");
-    canvas.style.display = "block";
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.width = canvas.width + "px";
-    canvas.style.height = canvas.height + "px";
+  loader.load(
+  '/resources/Alien_Muscle_001_COLOR.jpg',
+  tex => {
+    clouds = tex;
+    clouds.wrapS = THREE.RepeatWrapping;
+    clouds.wrapT = THREE.RepeatWrapping;
+    init();
+    animate();
+  });
 
-    var wrapper = document.getElementById("web-gl-wrapper");
-    wrapper.appendChild(canvas);
 
-    initGL(canvas);
-    initShader();
-    initBuffers();
+});
 
-    requestAnimationFrame(drawScene);
-  };
 
-  function initGL(canvas) {
-    try {
-      gl =
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      gl.viewportWidth = canvas.width;
-      gl.viewportHeight = canvas.height;
-    } catch (e) {}
+function init() {
+  container = document.getElementById('web-gl-wrapper');
+
+  camera = new THREE.Camera();
+  camera.position.z = 1;
+
+  scene = new THREE.Scene();
+
+  var geometry = new THREE.PlaneBufferGeometry(2, 2);
+
+  uniforms = {
+    u_time: { type: "f", value: 1.0 },
+    u_resolution: { type: "v2", value: new THREE.Vector2() },
+    u_noise: { type: "t", value: texture },
+    u_clouds: { type: "t", value: clouds },
+    u_mouse: { type: "v2", value: new THREE.Vector2() } };
+
+
+  var material = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: document.getElementById('vertexShader').textContent,
+    fragmentShader: document.getElementById('fragmentShader').textContent });
+
+  material.extensions.derivatives = true;
+
+  var mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setPixelRatio(window.devicePixelRatio);
+
+  container.appendChild(renderer.domElement);
+
+  onWindowResize();
+  window.addEventListener('resize', onWindowResize, false);
+
+  document.addEventListener('pointermove', e => {
+    let ratio = window.innerHeight / window.innerWidth;
+    uniforms.u_mouse.value.x = (e.pageX - window.innerWidth / 2) / window.innerWidth / ratio;
+    uniforms.u_mouse.value.y = (e.pageY - window.innerHeight / 2) / window.innerHeight * -1;
+
+    e.preventDefault();
+  });
+}
+
+function onWindowResize(event) {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  uniforms.u_resolution.value.x = renderer.domElement.width;
+  uniforms.u_resolution.value.y = renderer.domElement.height;
+}
+
+function animate(delta) {
+  requestAnimationFrame(animate);
+  render(delta);
+}
+
+
+
+
+
+
+let capturer = new CCapture({
+  verbose: true,
+  framerate: 60,
+  quality: 90,
+  format: 'webm',
+  workersPath: 'js/' });
+
+let capturing = false;
+
+isCapturing = function (val) {
+  if (val === false && window.capturing === true) {
+    capturer.stop();
+    capturer.save();
+  } else if (val === true && window.capturing === false) {
+    capturer.start();
   }
+  capturing = val;
+};
+toggleCapture = function () {
+  isCapturing(!capturing);
+};
 
-  function initShader() {
-    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, fragmentShaderText);
-    gl.compileShader(fragmentShader);
+window.addEventListener('keyup', function (e) {if (e.keyCode == 68) toggleCapture();});
 
-    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, glVertexShaderText);
-    gl.compileShader(vertexShader);
+let then = 0;
+function render(delta) {
 
-    shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
+  uniforms.u_time.value = -10000 + delta * 0.0005;
+  renderer.render(scene, camera);
 
-    gl.linkProgram(shaderProgram);
-
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      console.log("Could not initialise shaders");
-    }
-
-    gl.useProgram(shaderProgram);
-
-    positionLocation = gl.getAttribLocation(shaderProgram, "a_position");
-
-    ut = gl.getUniformLocation(shaderProgram, "uTime");
-    st = Date.now();
-
-    var resolution = new Float32Array([canvas.width, canvas.height]);
-    gl.uniform2fv(
-      gl.getUniformLocation(shaderProgram, "uResolution"),
-      resolution
-    );
+  if (capturing) {
+    capturer.capture(renderer.domElement);
   }
-
-  function initBuffers() {
-    buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    vertices = [
-      -1.0,
-      -1.0,
-      1.0,
-      -1.0,
-      -1.0,
-      1.0,
-      -1.0,
-      1.0,
-      1.0,
-      -1.0,
-      1.0,
-      1.0
-    ];
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    buffer.itemSize = 2;
-    buffer.numItem = 6;
-  }
-
-  function drawScene() {
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(
-      positionLocation,
-      buffer.itemSize,
-      gl.FLOAT,
-      false,
-      0,
-      0
-    );
-
-    gl.uniform1f(ut, (Date.now() - st) / 1000);
-
-    // draw
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-    requestAnimationFrame(drawScene);
-  }
-
-  start();
-})();
+}

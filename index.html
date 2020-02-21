@@ -123,75 +123,154 @@
         <a href="https://open.spotify.com/user/happysperm">Spotify</a>
       </div>
     </div>
-    <script id="webgl-vshader">
-      attribute vec2 a_position;
-      void main() {
-        gl_Position = vec4(a_position, 0, 1);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
+<script id="vertexShader" type="x-shader/x-vertex">
+    void main() {
+        gl_Position = vec4( position, 1.0 );
+    }
+</script>
+<script id="fragmentShader" type="x-shader/x-fragment">
+    uniform vec2 u_resolution;
+    uniform vec2 u_mouse;
+    uniform float u_time;
+    uniform vec3 u_colours[ 5 ];
+    uniform sampler2D u_clouds;
+  
+    const float multiplier = 1.5;
+  
+    const float zoomSpeed = 4.;
+    const int layers = 10;
+  
+    const int octaves = 1;
+    const float seed = 43758.5453123;
+    const float seed2 = 73156.8473192;
+  
+    float random(float val) {
+      return fract(sin(val) * seed);
+    }
+  
+    vec2 random2(vec2 st, float seed){
+        st = vec2( dot(st,vec2(127.1,311.7)),
+                  dot(st,vec2(269.5,183.3)) );
+        return -1.0 + 2.0*fract(sin(st)*seed);
+    }
+  
+    mat2 rotate2d(float _angle){
+        return mat2(cos(_angle),sin(_angle),
+                    -sin(_angle),cos(_angle));
+    }
+  
+    // Value Noise by Inigo Quilez - iq/2013
+    // https://www.shadertoy.com/view/lsf3WH
+    float noise(vec2 st, float seed) {
+        vec2 i = floor(st);
+        vec2 f = fract(st);
+
+        vec2 u = f*f*(3.0-2.0*f);
+
+        return mix( mix( dot( random2(i + vec2(0.0,0.0), seed ), f - vec2(0.0,0.0) ), 
+                         dot( random2(i + vec2(1.0,0.0), seed ), f - vec2(1.0,0.0) ), u.x),
+                    mix( dot( random2(i + vec2(0.0,1.0), seed ), f - vec2(0.0,1.0) ), 
+                         dot( random2(i + vec2(1.0,1.0), seed ), f - vec2(1.0,1.0) ), u.x), u.y);
+    }
+  
+    float fbm(in vec2 st, float seed) {
+      float value = 0.0;
+      float amp = 0.5;
+      vec2 shift = vec2(100);
+      // Rotate to reduce axial bias
+      mat2 rot = mat2(cos(1.5), sin(1.5), -sin(1.5), cos(1.50));
+      for (int i = 0; i < octaves; ++i) {
+        value += amp * abs(noise(st, seed));
+        st = rot * st * 2.0 + shift;
+        amp *= 0.5;
       }
-    </script>
+      return value;
+    }
+  
+    vec3 renderNoise(vec2 uv) {
+      float r = fbm(uv, seed);
+      return vec3(r * r * 10.);
+    }
+  
+    // The render function is where we render the pattern to be added to the layer
+    vec3 render(vec2 uv, float multiplier, inout vec2 id) {
+      return texture2D(u_clouds, uv).rgb;
 
-    <script id="fshader">
-      precision mediump float;
+    }
+  
+    vec3 renderLayer(int layer, int layers, vec2 uv, inout float opacity, inout vec2 id, in vec3 colour) {
+      // Scale
+      // Generating a scale value between zero and 1 based on a mod of u_time
+      // A frequency of 10 dixided by the layer index (10 / layers * layer)
+      float scale = mod((u_time + zoomSpeed / float(layers) * float(layer)) / zoomSpeed, -1.);
+      float vignette = smoothstep(.1, .3, length(uv * scale * 1.5));
+      uv *= 1. + scale; // The initial scale. Increasing this makes the cells smaller and the "speed" apepar faster
+      uv *= (1. + random(float(layer)));
+      uv *= scale; // then modifying the overall scale by the generated amount
+      // uv += .5*float(layer);
+      uv = rotate2d((u_time * .1 + (scale*2.))) * uv; // rotarting
+      // uv += vec2(1.5) * float(layer) * random(float(layer+10)); // ofsetting the UV by an arbitrary amount to make the layer appear different
+      
+      // id = random2(floor(uv), seed);
 
-      uniform vec2 uResolution;
-      uniform float uTime;
+      // render
+      vec3 pass = render(uv * multiplier + colour.z, multiplier, id); // render the pass
 
+       // this is the opacity of the layer fading in from the "bottom"
+      opacity = clamp(1. + scale * 1.1, 0., 1.) - smoothstep(.5, 0.2, pass.x);
+      opacity -= smoothstep(.0, .8, clamp(1. - vignette * 2. * (1. + (scale) * -1.) * pass.x, 0., 1.));
+      float _opacity = opacity;
 
-      float PI = 3.1415926535;
+      // This is the opacity of the layer fading out at the top (we want this minimal, hence the smoothstep)
+      float endOpacity = 1.;
+      endOpacity = smoothstep(0., 0.05, scale * -1.);
+      opacity += endOpacity;
 
-      float getRate(){
-        float val = 3.2;
-        float modNumber = mod(uTime, val);
-        float returnValue = 0.;
+      return clamp(pass * _opacity * endOpacity, 0., 1.) * 2.;
+    }
+  
+  // smooth min
+  // reference: http://iquilezles.org/www/articles/smin/smin.htm
+  float smin(float a, float b, float k) {
+      float res = exp(-k*a) + exp(-k*b);
+      return -log(res)/k;
+  }
 
-        if (modNumber < 0.8) {
-          returnValue = modNumber / 0.8;
-        } else if (modNumber < 1.6) {
-          returnValue = 1.0;
-        } else if (modNumber < 3.0) {
-          returnValue = (3.0 - modNumber) / 1.4;
+    void main() {
+        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy);
+
+        if(u_resolution.y < u_resolution.x) {
+          uv /= u_resolution.y;
         } else {
-          returnValue = 0.0;
+          uv /= u_resolution.x;
         }
 
-        return returnValue;
+        // uv.x += sin(u_time) * .5;
 
+        vec3 colour = vec3(0.);
+        vec3 layercolour = vec3(0.);
 
-      }
+        float opacity = 1.;
+        float opacity_sum = 1.;
 
-      void main(void) {
-        vec2 p = (gl_FragCoord.xy - .5 * uResolution) / min(uResolution.x, uResolution.y);
-        vec3 c = vec3(0.);
-
-        for (int j = 0; j < 3; j++) {
-          for (int i = 1; i < 20; i++ ) {
-            float t = 2. * PI * float(i) / 10.0 * (uTime / 4.0);
-            float x = (float(i) / 5.0 - 2.0) * (sin(t));// sin(t) ;
-            float y = cos(t * (1.0 + float(j) / 10.0));
-            vec2 o = 0.45 * vec2(x, y) * getRate();
-
-            //float b = 1.-r;
-            vec3 col;
-            if (j < 1) {
-              col = vec3(0.1, 0.05, 0.0);
-            } else if (j < 2) {
-              col = vec3(0.00, 0.1, 0.05);
-            } else {
-              col = vec3(0.05, 0.0, 0.1);
-            }
-
-            c += 0.04 / (length(p - o)) * vec3(col);
-          }
+        for(int i = 1; i <= layers; i++) {
+          vec2 id;
+          vec3 layer = renderLayer(i, layers, uv, opacity, id, colour * clamp(1. - length(uv) * .8, 0., 1.));
+          layercolour = layer *2.;
+          float t = u_time * .1 + (1. + length(id));
+          // vec3 cellcolour = vec3(sin(t)*0.2, cos(t)*0.2, cos(t*.3)*0.3)*.5+.5;
+          vec3 cellcolour = colour*(1. + length(id))*.5+.2;
+          colour = mix(colour, cellcolour, layercolour);
+          opacity_sum += opacity;
         }
 
-
-
-        gl_FragColor = vec4(c * 0.9, 1.0);
-
-
-      }
+        gl_FragColor = vec4(colour*1.5 * (1. - length(uv) * .5 + .5),1.0);
+      // gl_FragColor *= gl_FragColor;
+      // gl_FragColor += gl_FragColor.brga;
+      
+    }
     </script>
-
     <div id="web-gl-wrapper"></div>
     <script
       async
