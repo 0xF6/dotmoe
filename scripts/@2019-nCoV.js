@@ -77,48 +77,14 @@ function onWindowResize(event) {
   uniforms.u_resolution.value.x = renderer.domElement.width;
   uniforms.u_resolution.value.y = renderer.domElement.height;
 }
-
 function animate(delta) {
   requestAnimationFrame(animate);
   render(delta);
 }
-
-
-
-
-
-
-let capturer = new CCapture({
-  verbose: true,
-  framerate: 60,
-  quality: 90,
-  format: 'webm',
-  workersPath: 'scripts/' });
-
-let capturing = false;
-
-isCapturing = function (val) {
-  if (val === false && window.capturing === true) {
-    capturer.stop();
-    capturer.save();
-  } else if (val === true && window.capturing === false) {
-    capturer.start();
-  }
-  capturing = val;
-};
-toggleCapture = function () {
-  isCapturing(!capturing);
-};
-
 window.addEventListener('keyup', function (e) {if (e.keyCode == 68) toggleCapture();});
 
 let then = 0;
 function render(delta) {
-
   uniforms.u_time.value = -10000 + delta * 0.0005;
   renderer.render(scene, camera);
-
-  if (capturing) {
-    capturer.capture(renderer.domElement);
-  }
 }
