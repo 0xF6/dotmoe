@@ -124,12 +124,12 @@
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
-<script id="vertexShader" type="x-shader/x-vertex">
-    void main() {
-        gl_Position = vec4( position, 1.0 );
-    }
-</script>
-<script id="fragmentShader" type="x-shader/x-fragment">
+    <script id="vertexShader" type="x-shader/x-vertex">
+        void main() {
+            gl_Position = vec4( position, 1.0 );
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
     uniform vec2 u_resolution;
     uniform vec2 u_mouse;
     uniform float u_time;
@@ -243,14 +243,22 @@
       async
       src="https://www.googletagmanager.com/gtag/js?id=UA-70421575-7"
     ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
 
-      gtag("config", "UA-70421575-7");
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyCUm2XU-INO-bx0cJclYB1S8zjMxP3Dtks",
+        authDomain: "xf6-moe.firebaseapp.com",
+        databaseURL: "https://xf6-moe.firebaseio.com",
+        projectId: "xf6-moe",
+        storageBucket: "xf6-moe.appspot.com",
+        messagingSenderId: "606269212555",
+        appId: "1:606269212555:web:dd56c0e0f9f0a38df5d18e",
+        measurementId: "G-SYKV7GQB24"
+      };
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
     </script>
 
     <script src="https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js"></script>
