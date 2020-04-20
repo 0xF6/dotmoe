@@ -39,7 +39,7 @@ function reloadTextures()
 }
 
 reloadTextures();
-setInterval(reloadTextures, 2000);
+setInterval(reloadTextures, 10000);
 
 
 function init() {
