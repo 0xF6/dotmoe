@@ -5,35 +5,41 @@ let uniforms;
 let loader = new THREE.TextureLoader();
 let texture, clouds;
 loader.setCrossOrigin("anonymous");
-loader.load(
-'/resources/noise.png',
-tex => {
-  texture = tex;
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.minFilter = THREE.LinearFilter;
-  const url = new URLSearchParams(window.location.search);
-  let idTexture = url.get("texture");
-  if(!idTexture)
-  {
-    function randomInteger(min, max) {
-      return Math.round(min - 0.5 + Math.random() * (max - min + 1));
-    }
-    idTexture = randomInteger(1, 12).toString();
-  }
-    
+function reloadTextures()
+{
   loader.load(
-  `/resources/textures/${idTexture}.png`,
-  tex => {
-    clouds = tex;
-    clouds.wrapS = THREE.RepeatWrapping;
-    clouds.wrapT = THREE.RepeatWrapping;
-    init();
-    animate();
-  });
+    '/resources/noise.png',
+    tex => {
+      texture = tex;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.minFilter = THREE.LinearFilter;
+      const url = new URLSearchParams(window.location.search);
+      let idTexture = url.get("texture");
+      if(!idTexture)
+      {
+        function randomInteger(min, max) {
+          return Math.round(min - 0.5 + Math.random() * (max - min + 1));
+        }
+        idTexture = randomInteger(1, 12).toString();
+      }
+        
+      loader.load(
+      `/resources/textures/${idTexture}.png`,
+      tex => {
+        clouds = tex;
+        clouds.wrapS = THREE.RepeatWrapping;
+        clouds.wrapT = THREE.RepeatWrapping;
+        init();
+        animate();
+      });
+    
+    
+    });
+}
 
 
-});
+setInterval(reloadTextures, 2000);
 
 
 function init() {
