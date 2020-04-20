@@ -15,9 +15,15 @@ tex => {
   const url = new URLSearchParams(window.location.search);
   let idTexture = url.get("texture");
   if(!idTexture)
-    idTexture = "f5.png";
+  {
+    function randomInteger(min, max) {
+      return Math.round(min - 0.5 + Math.random() * (max - min + 1));
+    }
+    idTexture = randomInteger(1, 12).toString();
+  }
+    
   loader.load(
-  `/resources/${idTexture}`,
+  `/resources/textures/${idTexture}.png`,
   tex => {
     clouds = tex;
     clouds.wrapS = THREE.RepeatWrapping;
