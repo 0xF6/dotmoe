@@ -38,7 +38,7 @@ function reloadTextures()
     });
 }
 
-
+reloadTextures();
 setInterval(reloadTextures, 2000);
 
 
