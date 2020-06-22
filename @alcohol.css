@@ -1,7 +1,23 @@
 hr:first-of-type {
   margin-top: -7px;
 }
-
+body { font: 14px/1.5em "Fira Code"; }
+.code {
+  font-feature-settings: "calt" 1;  /* Enable ligatures for IE 10+, Edge */
+  text-rendering: optimizeLegibility; /* Force ligatures for Webkit, Blink, Gecko */
+  width: 30em;
+  margin: 5em auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.light { font-weight: 300; }
+.regular { font-weight: 400; }
+.medium { font-weight: 500; }
+.semibold { font-weight: 600; }
+.bold { font-weight: 700; }
+.variable { font-family: 'Fira Code VF'; font-variation-settings: 'wght' 400; }
+i { font-style: normal; color: #c33; }
+b { font-weight: inherit; color: #c33; }
 #bottom {
   line-height: 25px;
 }
