@@ -1,7 +1,11 @@
 hr:first-of-type {
   margin-top: -7px;
 }
-body { font: 14px/1.5em "Fira Code"; }
+body { 
+font: 14px/1.5em "Fira Code";
+ font-feature-settings: "calt" 1;
+text-rendering: optimizeLegibility;
+ }
 .code {
   font-feature-settings: "calt" 1;  /* Enable ligatures for IE 10+, Edge */
   text-rendering: optimizeLegibility; /* Force ligatures for Webkit, Blink, Gecko */
