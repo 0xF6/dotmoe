@@ -73,6 +73,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link rel="stylesheet" href="fira_code.css" />
     <link rel="stylesheet" href="@alcohol.css" />
+    <link rel="stylesheet" href="spotify-anthem.css" />
 </head>
 
 <body>
@@ -108,6 +109,41 @@
         </div>
     </div>
     <canvas></canvas>
+    <div id="app-cover">
+        <div id="player">
+            <div id="player-track">
+                <div id="album-name"></div>
+                <div id="track-name"></div>
+                <div id="track-time">
+                    <div id="current-time"></div>
+                    <div id="track-length"></div>
+                </div>
+                <div id="s-area">
+                    <div id="ins-time"></div>
+                    <div id="s-hover"></div>
+                    <div id="seek-bar"></div>
+                </div>
+            </div>
+            <div id="player-content">
+                <a id="buffer-box" href="https://github.com/0xF6/spotify-anthem" target="_blank">Spotify Anthem</a>
+                <div id="album-art">
+                    <img src="" class="active" id="_1">
+                </div>
+                <div id="player-controls">
+                    <div class="control">
+                        <div class="button" id="play-pause-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="control">
+                        <div class="button" id="open-button">
+                            <i class="fab fa-spotify"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-performance.js"></script>
@@ -129,6 +165,7 @@
 
     <script src="https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js"></script>
     <script src="scripts/@2019-nCoV.js"></script>
+    <script src="scripts/spotify-anthem.js"></script>
     <script>
         var _ = new Date(),
             m = _.getMonth(),
@@ -139,6 +176,7 @@
             document.getElementById("base").src =
                 "resources/@no-u=[outline]-[new-year].png";
         }
+        window.harsomtus.init();
     </script>
 </body>
 
