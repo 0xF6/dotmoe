@@ -43,7 +43,7 @@ body {
   min-height: 100vh;
 }
 
-.main_art img {
+#base {
   margin-top: -220px;
   max-width: 225px;
 }
