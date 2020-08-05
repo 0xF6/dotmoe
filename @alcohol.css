@@ -32,7 +32,6 @@ hr:last-of-type {
 
 body {
   overflow: hidden;
-  line-height: 25px;
   font-family: "Times New Roman", serif;
   background-color: #111;
   margin: 0;
@@ -63,6 +62,7 @@ a {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  line-height: 25px;
 }
 canvas {
   z-index: -1;
