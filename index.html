@@ -55,7 +55,7 @@
     <meta name="author" content="Yuuki Wesp" />
     <meta name="copyright" content="Yuuki Wesp" />
     <meta name="yandex" content="noyaca" />
-
+    <base href=""/>
     <meta name="Description" content="Yuuki Wesp is a hardware engineer, 3D designer and DNA Processor" />
     <!-- OG -->
     <meta property="og:url" content="https://0xf6.moe/" />
@@ -72,76 +72,129 @@
     <link rel="icon" type="image/png" href="resources/@favicon.png" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link rel="stylesheet" href="@alcohol.css" />
-    <link rel="stylesheet" href="spotify-anthem.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-    <div id="wrapper">
-        <img id="base" src="resources/@no-u=[outline].png" />
+    <!--<div id="wrapper">
+        <img id="base" src="resources/@no-u=[outline].png">
         <h4>Yuuki Wesp</h4>
-        <hr /> 🧬🔬🦠
-        <br /> Hardware engineer;
-        <br /> 3D designer, DNA Processor;
-        <br /> GameDev, Robotics;
-        <br /> 💖 C#, Q#, X#, C++, asm, R 💖
-        <br />
+        <hr> 🧬🔬🦠
+        <br> Hardware engineer;
+        <br> 3D designer, DNA Processor;
+        <br> GameDev, Robotics;
+        <br> 💖 C#, Q#, X#, C++, asm, R 💖
+        <br>
         <a title="Telegram" href="https://ivy.run/telegram">
         @ivysola
       </a>
         <a title="Discord" href="https://ivy.run/discord">
         Cytosine#1448
       </a>
-        <hr />
+        <hr>
         <div id="bottom">
             <a href="https://ivy.run/github">github</a> |
             <a href="https://ivy.run/keybase">keybase</a> |
             <a href="https://ivy.run/shikimori">shikimori</a>
-            <br />
+            <br>
             <a href="https://ivy.run/codestats">codestats</a> |
             <a href="https://ivy.run/artstation">artstation</a> |
             <a href="https://ivy.run/twitter">twitter</a>
-            <br />
+            <br>
             <a href="https://ivy.run/lastfm">last.fm</a> |
             <a href="https://ivy.run/spotify">Spotify</a>
-            <br />
-            <a href="tg://proxy?server=mt5.proxy.0xf6.moe&port=443&secret=cb4a765b8450e6665d7cd5d2791204af">telegram proxy</a>
+            <br>
+            <a href="tg://proxy?server=mt5.proxy.0xf6.moe&amp;port=443&amp;secret=cb4a765b8450e6665d7cd5d2791204af">telegram proxy</a>
         </div>
-    </div>
-    <canvas></canvas>
-    <div id="player">
-        <div id="player-track">
-            <div id="album-name"></div>
-            <div id="track-name"></div>
-            <div id="track-time">
-                <div id="current-time"></div>
-                <div id="track-length"></div>
-            </div>
-            <div id="s-area">
-                <div id="ins-time"></div>
-                <div id="s-hover"></div>
-                <div id="seek-bar"></div>
-            </div>
-        </div>
-        <div id="player-content">
-            <a id="buffer-box" href="https://github.com/0xF6/spotify-anthem" target="_blank">Spotify Anthem</a>
-            <div id="album-art">
-                <img src="https://i.scdn.co/image/ab67616d0000b273597061b5005caadad637460a" class="active" id="_1">
-            </div>
-            <div id="player-controls">
-                <div class="control">
-                    <div class="button" id="play-pause-button">
-                        <i class="fas fa-play"></i>
-                    </div>
+    </div>-->
+        <div id="container" class="wrapper">
+            <ul id="scene" class="scene unselectable" data-friction-x="0.1" data-friction-y="0.1" data-scalar-x="25" data-scalar-y="15" >
+                <li class="layer" data-depth="0.00"></li>
+                <li class="layer" data-depth="0.10"><div class="background"></div></li>
+                <li class="layer" data-depth="0.10"><div class="light orange b phase-4"></div></li>
+                <li class="layer" data-depth="0.10"><div class="light purple c phase-5"></div></li>
+                <li class="layer" data-depth="0.10"><div class="light orange d phase-3"></div></li>
+                <li class="layer" data-depth="0.15" >
+                    <ul class="rope depth-10">
+                        <li><img src="images/rope.png" alt="Rope"></li>
+                        <li class="hanger position-2">
+                            <div class="board d-6 swing-1"></div>
+                        </li>
+                        <li class="hanger position-4">
+                            <div class="board d-1 swing-3"></div>
+                        </li>
+                        <li class="hanger position-8">
+                            <div class="board d-0 swing-5"></div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layer" data-depth="0.30">
+                    <ul class="rope depth-30">
+                        <li><img src="images/rope.png" alt="Rope"></li>
+                        <li class="hanger position-1">
+                            <div class="board d-5 swing-3"></div>
+                        </li>
+                        <li class="hanger position-5">
+                            <div class="board d-4 swing-1"></div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layer" data-depth="0.30"><div class="wave paint depth-30"></div></li>
+                <li class="layer" data-depth="0.40"><div class="wave plain depth-40"></div></li>
+                <li class="layer" data-depth="0.50" ><div class="wave paint depth-50"></div></li>
+                <li class="layer" data-depth="0.60" >
+                    <div class="lighthouse depth-60"></div>
+                </li>
+                <!--<li class="layer" data-depth="0.60" >
+                    <div class="lighthouse-2 depth-60"></div>
+                </li>-->
+                
+                <li class="layer" data-depth="0.60">
+                    <ul class="rope depth-60">
+                        <li><img src="images/rope.png" alt="Rope"></li>
+                        <li class="hanger position-3">
+                            <div class="board d-0 swing-5"></div>
+                        </li>
+                        <li class="hanger position-6">
+                            <div class="board d-2 swing-2"></div>
+                        </li>
+                        <li class="hanger position-8">
+                            <div class="board d-3 swing-4"></div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layer" data-depth="0.60"><div class="wave plain depth-60"></div></li>
+                <li class="layer" data-depth="0.80"><div class="wave plain depth-80"></div></li>
+                <li class="layer" data-depth="1.00"><div class="wave paint depth-100"></div></li>
+            </ul>
+            <div id="wrapper">
+                <img id="base" src="resources/@no-u=[outline].png">
+                <h4>Yuuki Wesp</h4>
+                <hr> 🧬🔬🦠
+                <br> Hardware engineer;
+                <br> 3D designer, DNA Processor;
+                <br> GameDev, Robotics;
+                <br> 💖 C#, Q#, X#, C++, asm, R 💖
+                <br>
+                <a title="Telegram" href="https://ivy.run/telegram">
+                  @ivysola
+                </a>
+                <hr>
+                <div id="bottom">
+                    <a href="https://ivy.run/github">github</a> |
+                    <a href="https://ivy.run/keybase">keybase</a> |
+                    <a href="https://ivy.run/shikimori">shikimori</a>
+                    <br>
+                    <a href="https://ivy.run/codestats">codestats</a> |
+                    <a href="https://ivy.run/artstation">artstation</a> |
+                    <a href="https://ivy.run/twitter">twitter</a>
+                    <br>
+                    <a href="https://ivy.run/lastfm">last.fm</a> |
+                    <a href="https://ivy.run/spotify">Spotify</a>
                 </div>
-                <div class="control">
-                    <div class="button" id="open-button">
-                        <i class="fab fa-spotify"></i>
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
+   
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-performance.js"></script>
@@ -162,10 +215,8 @@
     </script>
 
     <script src="https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js"></script>
-    <script src="scripts/@2019-nCoV.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-    <script src="scripts/spotify-anthem.js"></script>
     <script>
         var _ = new Date(),
             m = _.getMonth(),
@@ -176,8 +227,88 @@
             document.getElementById("base").src =
                 "resources/@no-u=[outline]-[new-year].png";
         }
-        window.harsomtus.init();
     </script>
+    <script src="scripts/libraries.min.js"></script>
+    <script src="scripts/jquery.parallax.js"></script>
+    <script>
+
+        // jQuery Selections
+        var $html = $('html'),
+                $container = $('#container'),
+                $prompt = $('#prompt'),
+                $toggle = $('#toggle'),
+                $about = $('#about'),
+                $scene = $('#scene');
+    
+        // Hide browser menu.
+        (function() {
+            setTimeout(function(){window.scrollTo(0,0);},0);
+        })();
+    
+        // Setup FastClick.
+        FastClick.attach(document.body);
+    
+        // Add touch functionality.
+        if (Hammer.HAS_TOUCHEVENTS) {
+            $container.hammer({drag_lock_to_axis: true});
+            _.tap($html, 'a,button,[data-tap]');
+        }
+    
+        // Add touch or mouse class to html element.
+        $html.addClass(Hammer.HAS_TOUCHEVENTS ? 'touch' : 'mouse');
+    
+        // Resize handler.
+        (resize = function() {
+            $scene[0].style.width = window.innerWidth + 'px';
+            $scene[0].style.height = window.innerHeight + 'px';
+            if (!$prompt.hasClass('hide')) {
+                if (window.innerWidth < 600) {
+                    $toggle.addClass('hide');
+                } else {
+                    $toggle.removeClass('hide');
+                }
+            }
+        })();
+    
+        // Attach window listeners.
+        window.onresize = _.debounce(resize, 200);
+        window.onscroll = _.debounce(resize, 200);
+    
+        function showDetails() {
+            $about.removeClass('hide');
+            $toggle.removeClass('i');
+        }
+    
+        function hideDetails() {
+            $about.addClass('hide');
+            $toggle.addClass('i');
+        }
+    
+        // Listen for toggle click event.
+        $toggle.on('click', function(event) {
+            $toggle.hasClass('i') ? showDetails() : hideDetails();
+        });
+    
+        // Pretty simple huh?
+        $scene.parallax();
+    
+        // Check for orientation support.
+        setTimeout(function() {
+            if ($scene.data('mode') === 'cursor') {
+                $prompt.removeClass('hide');
+                if (window.innerWidth < 600) $toggle.addClass('hide');
+                $prompt.on('click', function(event) {
+                    $prompt.addClass('hide');
+                    if (window.innerWidth < 600) {
+                        setTimeout(function() {
+                            $toggle.removeClass('hide');
+                        },1200);
+                    }
+                });
+            }
+        },1000);
+
+        </script>
 </body>
 
 </html>

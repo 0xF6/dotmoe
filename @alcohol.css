@@ -29,6 +29,7 @@ a {
 }
 
 #wrapper {
+  color: black;
   border-style: ridge;
   border-width: 5px;
   background-color: white;
@@ -40,7 +41,7 @@ a {
   user-select: none;
   line-height: 25px;
 }
-canvas {
+#scene {
   z-index: -1;
   position: absolute;
   top: 0;
